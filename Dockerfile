@@ -23,6 +23,7 @@ RUN set -ex \
  && pip install -U six \
  && pip install \
         Mopidy-Moped \
+        Mopidy-MusicBox-Webclient \
         Mopidy-GMusic \
         Mopidy-Pandora \
         Mopidy-YouTube \
@@ -31,38 +32,38 @@ RUN set -ex \
         pyopenssl \
         requests[security] \
         youtube-dl \
- && mkdir -p /var/lib/mopidy/.config \
- && ln -s /config /var/lib/mopidy/.config/mopidy \
-    # Clean-up
  && apt-get purge --auto-remove -y \
         curl \
         gcc \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache
 
-# Start helper script.
-COPY entrypoint.sh /entrypoint.sh
+#  Copy fallback configuration.
+COPY mopidy.conf /etc/default/mopidy.conf
 
-# Default configuration.
-COPY mopidy.conf /config/mopidy.conf
+#  Copy default configuration.
+COPY mopidy.conf /etc/mopidy/mopidy.conf
+
+# Copy helper script.
+COPY entrypoint.sh /entrypoint.sh
 
 # Copy the pulse-client configuratrion.
 COPY pulse-client.conf /etc/pulse/client.conf
 
 # Allows any user to run mopidy, but runs by default as a randomly generated UID/GID.
-ENV HOME=/var/lib/mopidy
-RUN set -ex \
- && usermod -u 84044 mopidy \
- && groupmod -g 84044 audio \
- && chown mopidy:audio -R $HOME /entrypoint.sh \
- && chmod go+rwX -R $HOME /entrypoint.sh
+#ENV HOME=/var/lib/mopidy
+#RUN set -ex \
+# && usermod -u 84044 mopidy \
+# && groupmod -g 84044 audio \
+# && chown mopidy:audio -R $HOME /entrypoint.sh \
+# && chmod go+rwX -R $HOME /entrypoint.sh
 
 # Runs as mopidy user by default.
-USER mopidy
+# USER mopidy
 
-VOLUME ["/var/lib/mopidy/local", "/var/lib/mopidy/media"]
+VOLUME ["/etc/mopidy", "/var/lib/mopidy"]
 
 EXPOSE 6600 6680 5555/udp
 
-ENTRYPOINT ["/usr/bin/dumb-init", "/entrypoint.sh"]
-CMD ["/usr/bin/mopidy"]
+ENTRYPOINT [  "/usr/bin/dumb-init", "/entrypoint.sh" ]
+#CMD [ "/usr/bin/mopidy --config /etc/mopidy/mopidy.conf" ]
