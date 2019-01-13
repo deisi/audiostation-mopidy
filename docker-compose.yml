@@ -5,7 +5,7 @@ services:
     build:
       context: .
     container_name: mopidy
-    image: audiostation/mopidy
+    image: audiostation/mopidy:v1.1
     ports:
       - "6600:6600"
       - "6680:6680"

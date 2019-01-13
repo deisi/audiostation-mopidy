@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.8
 
 RUN mkdir /etc/default && mkdir /etc/mopidy
 
@@ -11,32 +11,29 @@ COPY mopidy.conf /etc/mopidy/mopidy.conf
 # Copy helper script.
 COPY entrypoint.sh /entrypoint.sh
 
-# Copy the pulse-client configuratrion.
-COPY pulse-client.conf /etc/pulse/client.conf
-
 RUN apk update \
   && apk upgrade \
   && apk add --no-cache \
   --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-  gstreamer \
-  glib-dev \
-  gstreamer-dev \
-  alsa-utils \
-  python-dev \
-  alpine-sdk \
-  gst-plugins-good \
-  gst-plugins-bad \
-  gst-plugins-ugly \
-  py-six \
-  py-lxml \
-  gst-libav \
-  mopidy \
-  py-pip \
-  && pip install --upgrade pip \
-  && pip install -U mopidy \
-  && pip install Mopidy-MusicBox-Webclient
-  #&& glib-compile-schemas /usr/share/glib-2.0/schemas
+  mopidy
 
+# I cant explain why, but to me it seems
+# I have less pause in streams if I
+# also install these. However image size
+# also grows by about 80MB
+#RUN apk add --no-cache \
+#  gst-plugins-base0.10 \
+#  gst-plugins-good0.10 \
+#  gst-plugins-ugly0.10 \
+#  py-gst0.10
+
+## Install Pip to install extensions
+RUN apk add --no-cache \
+  py-pip \
+  && pip install --upgrade pip
+
+## Install extensions
+RUN pip install -U Mopidy-MusicBox-Webclient
 
 VOLUME ["/etc/mopidy", "/var/lib/mopidy"]
 
