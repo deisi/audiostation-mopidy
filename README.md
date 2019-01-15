@@ -1,5 +1,6 @@
 [![](https://images.microbadger.com/badges/image/audiostation/mopidy.svg)](https://microbadger.com/images/audiostation/mopidy "Get your own image badge on microbadger.com")
 [![](https://images.microbadger.com/badges/version/audiostation/mopidy.svg)](https://microbadger.com/images/audiostation/mopidy "Get your own version badge on microbadger.com")
+[![Build Status](https://travis-ci.org/deisi/audiostation-mopidy.svg?branch=master)](https://travis-ci.org/deisi/audiostation-mopidy)
 
 This is the mopidy container for the [audiostation](https://github.com/deisi/audiostation) project. Documentation here might be wrong.
 
